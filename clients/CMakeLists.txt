@@ -2,13 +2,14 @@
 # Copyright (c) 2019-2021 Advanced Micro Devices, Inc.
 # ########################################################################
 
-project(rocsolver-clients LANGUAGES C CXX)
+# project(rocsolver-clients LANGUAGES C CXX)
+enable_language(C)
 if(UNIX)
   enable_language(Fortran)
 endif()
 
 # Specify where to put the client binaries
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/staging")
 
 # The rocsolver target will exist if the library is being built along with the clients,
 # but if this is a clients-only build, we'll have to search for it.

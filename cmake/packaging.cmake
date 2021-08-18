@@ -1,0 +1,41 @@
+# Package-specific CPACK vars
+rocm_package_add_dependencies("rocblas >= 2.42" "rocblas < 2.43")
+
+if(OS_ID_sles)
+  rocm_package_add_rpm_dependencies("libLLVM7 >= 7.0.1")
+endif()
+set(CPACK_RPM_PACKAGE_REQUIRES ${RPM_REQUIREMENTS})
+
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.md")
+
+if(WIN32)
+  set(CPACK_SOURCE_GENERATOR "ZIP")
+  set(CPACK_GENERATOR "ZIP")
+  set(CMAKE_INSTALL_PREFIX "C:/hipSDK" CACHE PATH "Install path" FORCE)
+  set(INSTALL_PREFIX "C:/hipSDK")
+  set(CPACK_SET_DESTDIR OFF)
+  set(CPACK_PACKAGE_INSTALL_DIRECTORY "C:/hipSDK")
+  set(CPACK_PACKAGING_INSTALL_PREFIX "")
+  set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
+else()
+  if(NOT CPACK_PACKAGING_INSTALL_PREFIX)
+    set(CPACK_PACKAGING_INSTALL_PREFIX "${ROCM_PATH}")
+  endif()
+endif()
+
+set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION
+  "\${CPACK_PACKAGING_INSTALL_PREFIX}"
+  "\${CPACK_PACKAGING_INSTALL_PREFIX}/include"
+  "\${CPACK_PACKAGING_INSTALL_PREFIX}/lib"
+)
+
+set(ROCSOLVER_CONFIG_DIR "\${CPACK_PACKAGING_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}"
+  CACHE PATH "Path placed into ldconfig file")
+
+rocm_create_package(
+  NAME rocsolver
+  DESCRIPTION "AMD ROCm SOLVER library"
+  MAINTAINER "RocSOLVER maintainer <rocsolver-maintainer@amd.com>"
+  LDCONFIG
+  LDCONFIG_DIR ${ROCSOLVER_CONFIG_DIR}
+)

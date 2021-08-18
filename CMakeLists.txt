@@ -52,6 +52,8 @@ include(ROCMInstallTargets)
 include(ROCMPackageConfigHelpers)
 include(ROCMInstallSymlinks)
 include(ROCMCheckTargetIds)
+include(ROCMClients)
+include(ROCMUtilities)
 
 include(os-detection)
 get_os_id(OS_ID)
@@ -133,9 +135,24 @@ if(BUILD_LIBRARY)
   add_subdirectory(library)
 endif()
 
-if(BUILD_CLIENTS_TESTS OR BUILD_CLIENTS_BENCHMARKS OR BUILD_CLIENTS_SAMPLES)
-  add_subdirectory(clients)
+if(BUILD_CLIENTS_TESTS)
+  rocm_package_setup_client_component(tests)
 endif()
+
+if(BUILD_CLIENTS_BENCHMARKS)
+  rocm_package_setup_client_component(benchmarks)
+endif()
+
+if(BUILD_CLIENTS_SAMPLES)
+  rocm_package_setup_client_component(samples)
+endif()
+
+if(ROCM_PACKAGE_COMPONENTS)
+  add_subdirectory(clients)
+  rocm_package_setup_component(clients)
+endif()
+
+include(packaging)
 
 # Code Coverage Build Commands:
 #   make coverage_cleanup (clean coverage related files)

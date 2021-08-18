@@ -8,10 +8,12 @@ if(NOT ROCM_PATH)
   set(ROCM_PATH /opt/rocm)
 endif()
 
-find_package(ROCM 0.6 CONFIG QUIET PATHS ${ROCM_PATH})
+find_package(ROCM 0.7 CONFIG QUIET PATHS ${ROCM_PATH})
 if(NOT ROCM_FOUND)
-  set(rocm_cmake_tag "master" CACHE STRING "rocm-cmake tag to download")
-  set(rocm_cmake_url "https://github.com/RadeonOpenCompute/rocm-cmake/archive/${rocm_cmake_tag}.zip")
+  # TODO: Change back to RadeonOpenCompute when rocm-cmake is merged
+  # TODO: MAKE SURE THIS IS DONE BEFORE MERGING THIS
+  set(rocm_cmake_tag "client-packaging" CACHE STRING "rocm-cmake tag to download")
+  set(rocm_cmake_url "https://github.com/lawruble13/rocm-cmake/archive/${rocm_cmake_tag}.zip")
   set(rocm_cmake_path "${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag}")
   set(rocm_cmake_archive "${rocm_cmake_path}.zip")
   file(DOWNLOAD "${rocm_cmake_url}" "${rocm_cmake_archive}" STATUS status LOG log)
@@ -35,5 +37,5 @@ if(NOT ROCM_FOUND)
   execute_process( COMMAND ${CMAKE_COMMAND} --build rocm-cmake-${rocm_cmake_tag} --target install
     WORKING_DIRECTORY ${PROJECT_EXTERN_DIR})
 
-  find_package( ROCM 0.6 REQUIRED CONFIG PATHS ${PROJECT_EXTERN_DIR}/rocm-cmake )
+  find_package( ROCM 0.7 REQUIRED CONFIG PATHS ${PROJECT_EXTERN_DIR}/rocm-cmake )
 endif()

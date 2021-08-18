@@ -64,3 +64,11 @@ foreach(exe ${c_samples})
     C_EXTENSIONS OFF
   )
 endforeach()
+
+rocm_install(
+  TARGETS ${c_samples} ${cpp_samples} ${fortran_samples}
+  PREFIX rocsolver
+  COMPONENT samples
+)
+
+rocm_install_symlink_subdir(rocsolver COMPONENT samples)

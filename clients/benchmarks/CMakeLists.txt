@@ -20,3 +20,11 @@ target_link_libraries(rocsolver-bench PRIVATE
 # Turn on f16c intrinsics
 target_compile_options(rocsolver-bench PRIVATE -mf16c)
 target_compile_definitions(rocsolver-bench PRIVATE ROCM_USE_FLOAT16)
+
+rocm_install(
+  TARGETS rocsolver-bench
+  PREFIX rocsolver
+  COMPONENT benchmarks
+)
+
+rocm_install_symlink_subdir(rocsolver COMPONENT benchmarks)

@@ -86,6 +86,12 @@ add_armor_flags(rocsolver-test "${ARMOR_LEVEL}")
 
 target_compile_definitions(rocsolver-test PRIVATE GOOGLE_TEST)
 
+rocm_install(
+  TARGETS rocsolver-test
+  PREFIX rocsolver
+  COMPONENT tests
+)
+
 if(WIN32)
   file(GLOB third_party_dlls
     LIST_DIRECTORIES OFF
@@ -97,6 +103,13 @@ if(WIN32)
     $ENV{HIP_DIR}/bin/hipinfo.exe
     ${CMAKE_SOURCE_DIR}/rtest.*
   )
+
+  rocm_install(
+    FILES ${third_party_dlls}
+    DESTINATION rocsolver/bin
+    COMPONENT tests
+  )
+
   foreach(file_i ${third_party_dlls})
     add_custom_command(TARGET rocsolver-test
       POST_BUILD
@@ -104,6 +117,13 @@ if(WIN32)
       ARGS -E copy ${file_i} ${PROJECT_BINARY_DIR}/staging/
     )
   endforeach()
+
+  rocm_install(
+    DIRECTORY $ENV{rocblas_DIR}/bin/library
+    DESTINATION rocsolver/bin/library
+    COMPONENT tests
+  )
+
   add_custom_command(TARGET rocsolver-test
     POST_BUILD
     COMMAND ${CMAKE_COMMAND}
@@ -126,3 +146,5 @@ target_link_libraries(rocsolver-test PRIVATE
 # Turn on f16c intrinsics
 target_compile_options(rocsolver-test PRIVATE -mf16c)
 target_compile_definitions(rocsolver-test PRIVATE ROCM_USE_FLOAT16)
+
+rocm_install_symlink_subdir(rocsolver COMPONENT tests)
